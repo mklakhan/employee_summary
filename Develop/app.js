@@ -12,6 +12,74 @@ const render = require("./lib/htmlRenderer");
 
 
 // Write code to use inquirer to gather information about the development team members,
+inquirer
+    .prompt([
+        {
+            type: "input",
+            message: "What is the name of the team member?",
+            name: "name"
+        },
+        {
+            type: "input",
+            message: "What is the team member's ID?",
+            name: "id"
+        },
+        {
+            type: "input",
+            message: "What is the team member's email?",
+            name: "email"
+        },
+        {
+            type: "list",
+            message: "What is the team member's role?",
+            name: "role",
+            choice: [
+                "Manager",
+                "Engineer",
+                "Intern"
+            ]
+        },
+        {
+            type: "input",
+            message: "What is your GitHub username?",
+            name: "gitName",
+            when: function(answers) {
+                if (answers.role == 'Engineer') {
+                    return true;
+                } else {return false;}
+            }
+        },
+        {
+            type: "input",
+            message: "What is the name of your school?",
+            name: "school",
+            when: function (answers) {
+                if (answers.role == 'Intern') {
+                    return true;
+                } else { return false; }
+            }
+        },
+        {
+            type: "input",
+            message: "What is your office number?",
+            name: "officeNumber",
+            when: function (answers) {
+                if (answers.role == 'Manager') {
+                    return true;
+                } else { return false; }
+            }
+        }
+    ])
+    .then(answers => {
+        // Use user feedback for... whatever!!
+    })
+    .catch(error => {
+        if (error.isTtyError) {
+            // Prompt couldn't be rendered in the current environment
+        } else {
+            // Something else when wrong
+        }
+    });
 // and to create objects for each team member (using the correct classes as blueprints!)
 
 // After the user has input all employees desired, call the `render` function (required
