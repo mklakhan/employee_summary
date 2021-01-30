@@ -33,7 +33,7 @@ inquirer
             type: "list",
             message: "What is the team member's role?",
             name: "role",
-            choice: [
+            choices: [
                 "Manager",
                 "Engineer",
                 "Intern"
@@ -72,6 +72,8 @@ inquirer
     ])
     .then(answers => {
         // Use user feedback for... whatever!!
+        console.log(answers)
+        console.log(__dirname)
     })
     .catch(error => {
         if (error.isTtyError) {
