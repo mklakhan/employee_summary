@@ -12,76 +12,131 @@ const render = require("./lib/htmlRenderer");
 
 
 // Write code to use inquirer to gather information about the development team members,
-inquirer
-    .prompt([
-        {
-            type: "input",
-            message: "What is the name of the team member?",
-            name: "name"
-        },
-        {
-            type: "input",
-            message: "What is the team member's ID?",
-            name: "id"
-        },
-        {
-            type: "input",
-            message: "What is the team member's email?",
-            name: "email"
-        },
-        {
-            type: "list",
-            message: "What is the team member's role?",
-            name: "role",
-            choices: [
-                "Manager",
-                "Engineer",
-                "Intern"
-            ]
-        },
-        {
-            type: "input",
-            message: "What is your GitHub username?",
-            name: "gitName",
-            when: function(answers) {
-                if (answers.role == 'Engineer') {
-                    return true;
-                } else {return false;}
+const employeeArray = [];
+function addEmployee() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "What is the name of the team member?",
+                name: "name"
+            },
+            {
+                type: "input",
+                message: "What is the team member's ID?",
+                name: "id"
+            },
+            {
+                type: "input",
+                message: "What is the team member's email?",
+                name: "email"
+            },
+            {
+                type: "list",
+                message: "What is the team member's role?",
+                name: "role",
+                choices: [
+                    "Manager",
+                    "Engineer",
+                    "Intern"
+                ]
+            },
+            {
+                type: "input",
+                message: "What is your GitHub username?",
+                name: "gitName",
+                when: function(answers) {
+                    if (answers.role == 'Engineer') {
+                        return true;
+                    } else {return false;}
+                }
+            },
+            {
+                type: "input",
+                message: "What is the name of your school?",
+                name: "school",
+                when: function (answers) {
+                    if (answers.role == 'Intern') {
+                        return true;
+                    } else { return false; }
+                }
+            },
+            {
+                type: "input",
+                message: "What is your office number?",
+                name: "officeNumber",
+                when: function (answers) {
+                    if (answers.role == 'Manager') {
+                        return true;
+                    } else { return false; }
+                }
             }
-        },
-        {
-            type: "input",
-            message: "What is the name of your school?",
-            name: "school",
-            when: function (answers) {
-                if (answers.role == 'Intern') {
-                    return true;
-                } else { return false; }
+        ])
+        .then(answers => {
+            // Use user feedback for... whatever!!
+            switch (answers.role) {
+                case 'Manager':
+                    console.log("in the Manager switch statement")
+                    console.log(answers.officeNumber)
+                    let manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber);
+                    employeeArray.push(manager);
+                    console.log(manager);
+                    restart();
+                    break;
+                case 'Engineer':
+                    console.log("in the Engineer switch statement")
+                    let engineer = new Engineer(answers.name, answers.id, answers.email, answers.github);
+                    employeeArray.push(engineer);
+                    console.log(engineer);
+                    restart();
+                    break;
+                case 'Intern':
+                    console.log("in the Intern switch statement")
+                    let intern = new Intern(answers.name, answers.id, answers.email, answers.school);
+                    employeeArray.push(intern);
+                    console.log(intern);
+                    restart();
+                    break;
+                default:
+                    const employee = new Employee(answer.name, answers.email, answers.id)
+                   // masterArray.push(employee)
+                    restart();
             }
-        },
-        {
-            type: "input",
-            message: "What is your office number?",
-            name: "officeNumber",
-            when: function (answers) {
-                if (answers.role == 'Manager') {
-                    return true;
-                } else { return false; }
+            // restart()
+            console.log(answers)
+            console.log(__dirname)
+        })
+        .catch(error => {
+            if (error.isTtyError) {
+                // Prompt couldn't be rendered in the current environment
+            } else {
+                // Something else when wrong
             }
-        }
-    ])
-    .then(answers => {
-        // Use user feedback for... whatever!!
-        console.log(answers)
-        console.log(__dirname)
-    })
-    .catch(error => {
-        if (error.isTtyError) {
-            // Prompt couldn't be rendered in the current environment
-        } else {
-            // Something else when wrong
-        }
-    });
+        });
+    }
+
+    
+function restart() {
+    inquirer.prompt([{
+        type: 'confirm',
+        name: 'addMember',
+        message: 'Would you like to add another team member?'
+    }])
+        .then(function (response) {
+            if (response.addMember == true) {
+              addEmployee()
+            }
+            else {
+                 console.log("Finished!!")
+                 console.log(employeeArray);
+                 let team = render(employeeArray)
+                 console.log(team);
+                //createTeamHtml(team)
+            }
+        })
+} 
+
+addEmployee()
 // and to create objects for each team member (using the correct classes as blueprints!)
 
 // After the user has input all employees desired, call the `render` function (required
