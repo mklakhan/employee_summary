@@ -44,7 +44,7 @@ function addEmployee() {
             {
                 type: "input",
                 message: "What is your GitHub username?",
-                name: "gitName",
+                name: "github",
                 when: function(answers) {
                     if (answers.role == 'Engineer') {
                         return true;
@@ -80,21 +80,21 @@ function addEmployee() {
                     console.log(answers.officeNumber)
                     let manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber);
                     employeeArray.push(manager);
-                    console.log(manager);
+                   // console.log(manager);
                     restart();
                     break;
                 case 'Engineer':
                     console.log("in the Engineer switch statement")
                     let engineer = new Engineer(answers.name, answers.id, answers.email, answers.github);
                     employeeArray.push(engineer);
-                    console.log(engineer);
+                   // console.log(engineer);
                     restart();
                     break;
                 case 'Intern':
                     console.log("in the Intern switch statement")
                     let intern = new Intern(answers.name, answers.id, answers.email, answers.school);
                     employeeArray.push(intern);
-                    console.log(intern);
+                   // console.log(intern);
                     restart();
                     break;
                 default:
@@ -103,8 +103,8 @@ function addEmployee() {
                     restart();
             }
             // restart()
-            console.log(answers)
-            console.log(__dirname)
+           // console.log(answers)
+           // console.log(__dirname)
         })
         .catch(error => {
             if (error.isTtyError) {
@@ -128,13 +128,34 @@ function restart() {
             }
             else {
                  console.log("Finished!!")
-                 console.log(employeeArray);
+               //  console.log(employeeArray);
                  let team = render(employeeArray)
-                 console.log(team);
-                //createTeamHtml(team)
+                // console.log(team);
+                createTeamHtml(team)
             }
         })
 } 
+
+function createTeamHtml(content) {
+    // create dir if it doesn't exist
+    console.log(__dirname)
+    try {
+        // first check if directory already exists
+        if (!fs.existsSync(path.resolve(__dirname, "./output"))) {
+            fs.mkdirSync(path.resolve(__dirname, "./output"));
+            console.log("Directory is created.");
+        } else {
+            console.log("Directory already exists.");
+        }
+    } catch (err) {
+        console.log(err);
+    }
+
+    fs.writeFile(path.resolve(__dirname, "./output/team.html"), content, function (err) {
+        if (err) throw err;
+        console.log('Saved!');
+    });
+}
 
 addEmployee()
 // and to create objects for each team member (using the correct classes as blueprints!)
